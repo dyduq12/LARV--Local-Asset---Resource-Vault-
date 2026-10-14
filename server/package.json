@@ -1,0 +1,25 @@
+{
+  "name": "@larv/server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node node_modules/tsx/dist/cli.mjs watch src/server.ts",
+    "build": "node node_modules/typescript/bin/tsc",
+    "start": "node dist/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@larv/shared": "file:../shared",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.26.2",
+    "@fastify/cors": "^9.0.1",
+    "pino": "^8.19.0",
+    "pino-pretty": "^10.3.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  }
+}

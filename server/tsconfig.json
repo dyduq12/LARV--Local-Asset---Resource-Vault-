@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "paths": {
+      "@larv/shared": ["../shared/dist/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}

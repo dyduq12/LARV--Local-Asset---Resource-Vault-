@@ -1,0 +1,18 @@
+{
+  "name": "larv-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Asset & Resource Vault (LARV) - Monorepo",
+  "scripts": {
+    "dev:server": "npm.cmd --prefix server run dev",
+    "dev:client": "npm.cmd --prefix client run dev",
+    "dev": "npx.cmd concurrently -n \"server,client\" -c \"cyan,magenta\" \"npm.cmd run dev:server\" \"npm.cmd run dev:client\"",
+    "build:shared": "npm.cmd --prefix shared run build",
+    "build:server": "npm.cmd --prefix server run build",
+    "build:client": "npm.cmd --prefix client run build",
+    "test:server": "npm.cmd --prefix server run test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
