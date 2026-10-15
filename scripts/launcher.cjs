@@ -9,16 +9,50 @@ const clientDir = path.join(rootDir, 'client');
 const sharedDir = path.join(rootDir, 'shared');
 
 console.log('\x1b[36m%s\x1b[0m', '=============================================================');
-console.log('\x1b[36m%s\x1b[0m', '   LARV — Local Asset & Resource Vault (v1.0.0)');
+console.log('\x1b[36m%s\x1b[0m', '   LARV - Local Asset & Resource Vault (v1.0.0)');
 console.log('\x1b[36m%s\x1b[0m', '   Inicializador Operacional Local-First (One-Click Launcher)');
 console.log('\x1b[36m%s\x1b[0m', '=============================================================\n');
+
+// 0. Auto-healing: verificar e reparar integridade de @larv/shared nos modulos locais
+function ensureLocalPackageResolution(targetDir, pkgName) {
+  const pkgJsonPath = path.join(targetDir, 'node_modules', '@larv', 'shared', 'package.json');
+  let isHealthy = false;
+  try {
+    if (fs.existsSync(pkgJsonPath)) {
+      fs.readFileSync(pkgJsonPath, 'utf8');
+      isHealthy = true;
+    }
+  } catch (e) {
+    isHealthy = false;
+  }
+
+  if (!isHealthy) {
+    console.log('\x1b[33m%s\x1b[0m', '[Auto-Healing] Reparando vinculo local de @larv/shared em ' + pkgName + '...');
+    const symlinkPath = path.join(targetDir, 'node_modules', '@larv', 'shared');
+    try {
+      fs.rmSync(symlinkPath, { recursive: true, force: true });
+    } catch (e) {}
+
+    try {
+      const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+      execSync(npmCmd + ' install', { cwd: targetDir, stdio: 'inherit' });
+      console.log('\x1b[32m%s\x1b[0m', '[Auto-Healing] Vinculo de @larv/shared reparado com sucesso em ' + pkgName + '.');
+    } catch (err) {
+      console.error('\x1b[31m%s\x1b[0m', '[ERRO] Falha no auto-healing de ' + pkgName + ':', err.message);
+    }
+  }
+}
+
+ensureLocalPackageResolution(serverDir, 'server');
+ensureLocalPackageResolution(clientDir, 'client');
 
 // 1. Check shared build
 const sharedDist = path.join(sharedDir, 'dist', 'index.js');
 if (!fs.existsSync(sharedDist)) {
   console.log('\x1b[33m%s\x1b[0m', '[1/4] Compilando contratos compartilhados (@larv/shared)...');
   try {
-    execSync('npm.cmd --prefix shared run build', { cwd: rootDir, stdio: 'inherit' });
+    const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    execSync(npmCmd + ' --prefix shared run build', { cwd: rootDir, stdio: 'inherit' });
   } catch (e) {
     console.error('\x1b[31m%s\x1b[0m', '[ERRO] Falha ao compilar @larv/shared:', e.message);
     process.exit(1);
@@ -32,7 +66,8 @@ const serverDist = path.join(serverDir, 'dist', 'server.js');
 if (!fs.existsSync(serverDist)) {
   console.log('\x1b[33m%s\x1b[0m', '[2/4] Compilando backend Fastify...');
   try {
-    execSync('npm.cmd --prefix server run build', { cwd: rootDir, stdio: 'inherit' });
+    const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    execSync(npmCmd + ' --prefix server run build', { cwd: rootDir, stdio: 'inherit' });
   } catch (e) {
     console.error('\x1b[31m%s\x1b[0m', '[ERRO] Falha ao compilar server:', e.message);
     process.exit(1);
@@ -68,9 +103,9 @@ function checkFrontendReady(retries = 30) {
       console.log('\x1b[32m%s\x1b[0m', '   Pressione Ctrl+C para encerrar os servidores com seguranca.');
       console.log('\x1b[32m%s\x1b[0m', '=============================================================\n');
 
-      const openCmd = process.platform === 'win32' ? 'start http://localhost:5173' : 'xdg-open http://localhost:5173';
+      const openCmd = process.platform === 'win32' ? 'start "" "http://localhost:5173"' : 'xdg-open http://localhost:5173';
       try {
-        execSync(openCmd);
+        execSync(openCmd, { shell: true });
       } catch (e) {}
     } else {
       setTimeout(() => checkFrontendReady(retries - 1), 300);

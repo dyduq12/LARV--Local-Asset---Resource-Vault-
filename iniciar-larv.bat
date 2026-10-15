@@ -1,5 +1,5 @@
 @echo off
-title LARV — Local Asset & Resource Vault
+title LARV - Local Asset and Resource Vault
 cd /d "%~dp0"
 where node >nul 2>&1
 if %errorlevel% neq 0 (
