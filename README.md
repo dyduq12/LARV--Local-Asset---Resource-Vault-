@@ -75,7 +75,20 @@ O projeto é estruturado como um monorepo desacoplado com contratos unificados:
 
 ---
 
-## 🚀 Guia de Instalação e Execução
+## 🚀 Inicialização e Execução
+
+### ⚡ Modo One-Click (Duplo Clique no Windows)
+
+Para uma inicialização instantânea sem necessidade de abrir terminais manuais:
+
+1. Dê um **duplo clique** em **`iniciar-larv.bat`** (ou **`start-larv.bat`**) na raiz do projeto.
+2. O orquestrador compilará módulos pendentes se necessário, inicializará o **Fastify (Porta 3001)**, o **Vite (Porta 5173)** e abrirá a interface automaticamente no seu navegador padrão (`http://localhost:5173`).
+3. Para encerrar os servidores limpos e sem processos órfãos, basta pressionar `Ctrl + C` ou fechar a janela.
+
+---
+
+### 💻 Execução Manual via Terminal
+
 
 ### Pré-requisitos
 - **Node.js**: Versão 20+ ou 24+ LTS
